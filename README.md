@@ -1,5 +1,19 @@
 # EfficientNet PyTorch
 
+### This is a forked version of [EfficientNet-PyTorch](https://github.com/lukemelas/EfficientNet-PyTorch)
+* We want to update the effcient memory use version of swish
+* The above mentioned swish should support jit, code from [Jeremy Howard's Tweet](https://twitter.com/jeremyphoward/status/1188251041835315200)
+
+### Installation of this fork
+
+```bash
+git clone https://github.com/iofthetiger/EfficientNet-PyTorch
+cd EfficientNet-Pytorch
+pip install -e .
+``` 
+
+### ------ The below is from the original repo ------
+
 ### Update (July 31, 2019)
 
 _Upgrade the pip package with_ `pip install --upgrade efficientnet-pytorch`
