@@ -35,11 +35,31 @@ BlockArgs = collections.namedtuple('BlockArgs', [
 GlobalParams.__new__.__defaults__ = (None,) * len(GlobalParams._fields)
 BlockArgs.__new__.__defaults__ = (None,) * len(BlockArgs._fields)
 
+@torch.jit.script
+def swish_fwd(i): return i*i.sigmoid()
 
+@torch.jit.script
+def swish_bwd(i, grad_output):
+	sig = torch.sigmoid(i)
+	return grad_output * sig * (i*(1-sig)+1.)
+
+class SwishImplementation(torch.autograd.Function):
+	@staticmethod
+	def forward(ctx,i):
+		ctx.save_for_backward(i)
+		return swish_fwd(i)
+
+	@staticmethod
+	def backward(ctx,grad_output):
+		return swish_bwd(ctx,saved_variables[0], grad_output)
+
+class MemoryEfficientSwish(nn.Module):
+	def forward(self,x): return SwishImplementation.apply(x)
+
+swish_layer = MemoryEfficientSwish()
 def relu_fn(x):
     """ Swish activation function """
-    return x * torch.sigmoid(x)
-
+    return swish_layer(x)
 
 def round_filters(filters, global_params):
     """ Calculate and round number of filters based on depth multiplier. """
