@@ -51,7 +51,7 @@ class SwishImplementation(torch.autograd.Function):
 
 	@staticmethod
 	def backward(ctx,grad_output):
-		return swish_bwd(ctx,saved_variables[0], grad_output)
+		return swish_bwd(ctx.saved_variables[0], grad_output)
 
 class MemoryEfficientSwish(nn.Module):
 	def forward(self,x): return SwishImplementation.apply(x)
